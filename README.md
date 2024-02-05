@@ -6,8 +6,10 @@ This project, named "Instagram Image Downloader," is a simple tool designed to a
 
 ## Disclaimer
 
-**Important:** This tool is intended for personal use only. Ensure that you use it responsibly and adhere to ethical standards. Respect the privacy of others and obtain necessary permissions before downloading images from Instagram accounts. Do not use this tool to access or manipulate accounts without proper authorization. The developer is not responsible for any misuse or violation of terms of service.
+**Important:** This tool is intended for personal use only. Ensure that you use it responsibly and adhere to ethical standards. Respect the privacy of others and obtain necessary permissions before downloading images from Instagram accounts. Do not use this tool to access or manipulate accounts without proper authorization. The developer, is not responsible for any misuse or violation of terms of service.
 
 ---
 
 **Note:** Use this tool responsibly, respecting Instagram's terms of service and the privacy of others.
+
+Guga Abuladze (@gugizm) grants permission to modify, use, and distribute this tool freely.
