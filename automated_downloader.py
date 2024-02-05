@@ -24,7 +24,7 @@ def login(driver):
     try:
         log_in = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, '_aa48')))
         print('Element found!')
-        log_in.send_keys('zzhopewhite@gmail.com', Keys.TAB, 'Zumfara!1', Keys.ENTER)
+        log_in.send_keys('zzhopewhite@gmail.com', Keys.TAB, '', Keys.ENTER)
         print('Entering pass and user')
     except:
         print('There was a problem with log in !')
