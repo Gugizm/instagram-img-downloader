@@ -17,72 +17,73 @@ def initialize_driver():
     return driver
 
 
-def login(driver):
-    # user_name = input('Phone number, username or email: ')
-    # password = pyip.inputPassword('password: ')
+def login(driver, url):
+    while True:
+        user_name = input('Phone number, username or email: ') #after validation error needs to clear text fildes 
+        password = pyip.inputPassword('password: ')
+        target_user = input('Enter target user name: ') #can taken somewhere els or change
+        try:
+            log_in = driver.find_element(By.CLASS_NAME, '_aa48') #change for get_element
+            print('Element found!')
+            log_in.send_keys(user_name, Keys.TAB, password, Keys.ENTER) # need change for inputs
+            WebDriverWait(driver, 10).until(EC.url_changes(url))
+            print('Login sucses!')
+            return target_user
+        except:
+            print('There was a problem with log in !')
+            print('Try again!')
 
-    try:
-        log_in = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, '_aa48')))
-        print('Element found!')
-        log_in.send_keys('zzhopewhite@gmail.com', Keys.TAB, 'Zumfara!1', Keys.ENTER)
-        print('Entering pass and user')
-    except:
-        print('There was a problem with log in !')
-        print('Try again!')
 
-def next_page_check(driver, url):
-    counter = 0
-    while counter != 5:
-        if driver.current_url != url:
-            print('Sucses!')
+def create_folder(target_user):
+    os.makedirs(target_user, exist_ok=True)
+
+def full_page_loader(driver):
+    while True:
+        old_source = driver.page_source
+        driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
+        time.sleep(2)
+        new_source = driver.page_source
+        if old_source == new_source:
             break
-        else:
-            time.sleep(1)
-            counter += 1
+        old_source = new_source
+
+def download_img(driver, user): # split this function for a parts
+    cookies = driver.get_cookies()
+    session = requests.Session()
+    for cookie in cookies:
+        session.cookies.set(cookie['name'], cookie['value'])
+    
+    page_source = driver.page_source
+    soap = bs4.BeautifulSoup(page_source, 'lxml')
+    img_list = soap.select('._aagv img')
+    
+    for img in img_list:
+        img_url = img.get('src')
+        name = str(img.get('alt')) + '.png'
+        print(name)
+        res = session.get(img_url)
+        try:
+            res.raise_for_status()
+            print(f'downloading img {img_url}')
+        except:
+            print('Could not found img')
+        with open(os.path.join(user, name), 'wb') as file:
+            for chunk in res.iter_content(100000):
+                file.write(chunk)
 
 
 def main():
     url = 'https://www.instagram.com/'
     driver = initialize_driver()
     driver.get(url)
-    login(driver)
-    create_folder()
-    download_img()
-    
+    user = login(driver, url)
+    driver.get(url + user) #shoud take from input
+    create_folder(user)
+    time.sleep(5)
+    full_page_loader(driver)
+    download_img(driver, user)
+    driver.quite()
 
-def create_folder():
-    os.makedirs('insta_img', exist_ok=True)
 
-
-def download_img():
-
-    request = requests.get('https://www.instagram.com/gugizm/')
-    try:
-        request.raise_for_status()
-        print('Everything ok!!!')
-    except:
-        print("there was a problem")
-    
-    soap = bs4.BeautifulSoup(request.text, 'lxml')
-    img_list = soap.select('.x1iyjqo2 img')
-    print(img_list)
-    for img in img_list:
-        url = img.get('src')
-        print(url)
-        res = requests.get(url)
-        try:
-            res.raise_for_status()
-            print(f'downloading img {url}')
-        except:
-            print('Could not found img')
-        with open(os.path.join('insta_img', os.path.basename(url)), 'wb') as file:
-            for chunk in res.iter_content(100000):
-                file.write(chunk)
-
-main()
-
-#x1iyjqo2
-#cklikibng search
-    #need requests download page 
-#typing user
-#downloading content
+if __name__ == "__main__":
+    main()
